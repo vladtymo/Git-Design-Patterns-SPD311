@@ -5,95 +5,115 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Observer Pattern Guide</title>
   <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f7fa;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 30px;
-    }
-    .section {
-      margin-bottom: 30px;
-      padding: 20px;
-      border-left: 6px solid #3498db;
-      background-color: #f0f4f8;
-      border-radius: 8px;
-    }
-    .section h2 {
-      margin-top: 0;
-      color: #2980b9;
-    }
-    .section ul {
-      margin-top: 10px;
-      padding-left: 20px;
-    }
-    code {
-      display: block;
-      background-color: #e1e8ed;
-      padding: 15px;
-      border-radius: 6px;
-      overflow-x: auto;
-      margin-top: 10px;
-    }
-    .pros, .cons {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .pros div, .cons div {
-      flex: 1;
-      min-width: 200px;
-      background-color: #fff;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #d0d6de;
-    }
-    .pros div { border-left: 6px solid #2ecc71; }
-    .cons div { border-left: 6px solid #e74c3c; }
+    
+:root {
+  --bg: #0b1020;
+  --card: #111730;
+  --card-2: #0e142a;
+  --text: #e9eefc;
+  --muted: #a9b2d0;
+  --brand: #7aa2ff;
+  --accent: #55e6c1;
+  --border: #22305f;
+  --code: #0a0f22;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  --pros: #2ecc71;
+  --cons: #e74c3c;
+}
 
-    /* Back to Home button */
-    .btn {
-      display: inline-block;
-      text-decoration: none;
-      background-color: #3498db;
-      color: #fff;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: bold;
-      margin-top: 20px;
-      transition: background-color 0.3s, transform 0.2s;
-      text-align: center;
-    }
-    .btn:hover {
-      background-color: #2980b9;
-      transform: translateY(-1px);
-    }
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
 
-    /* UML Diagram */
-    .uml-diagram {
-      text-align: center;
-      margin-top: 20px;
-    }
-    .uml-diagram svg {
-      max-width: 100%;
-      height: auto;
-      border: 1px solid #d0d6de;
-      border-radius: 8px;
-      background-color: #fff;
-    }
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 32px 20px 64px;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(32px, 4vw, 54px);
+  margin-bottom: 32px;
+}
+
+.section {
+  background: linear-gradient(180deg, var(--card), var(--card-2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.section h2 {
+  margin-top: 0;
+  color: var(--brand);
+}
+
+.section ul {
+  padding-left: 20px;
+}
+
+pre, code {
+  background: var(--code);
+  padding: 14px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 14px;
+}
+
+.pros, .cons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.pros div, .cons div {
+  flex: 1;
+  min-width: 180px;
+  background: linear-gradient(180deg, var(--card-2), var(--card));
+  border-left: 6px solid;
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+}
+
+.pros div { border-color: var(--pros); }
+.cons div { border-color: var(--cons); }
+
+button, .btn {
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  text-decoration: none;
+  display: inline-block;
+  transition: 0.2s;
+}
+
+button:hover, .btn:hover {
+  background: var(--accent);
+}
+
+.uml-diagram svg {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  margin-top: 16px;
+}
+</style>
   </style>
 </head>
 <body>
