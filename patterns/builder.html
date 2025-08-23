@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Design Pattern</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#0b1020; color:#e9eefc; margin:0; padding:20px; }
+        a { color:#55e6c1; text-decoration:none; }
+        a:hover { text-decoration:underline; }
+        header, main, footer { max-width:900px; margin:auto; padding:16px; }
+        h1 { font-size:2em; margin-bottom:0.2em; }
+        h2 { margin-top:1em; }
+        pre { background:#111730; padding:16px; border-radius:8px; overflow:auto; }
+        .card { background:#111730; padding:16px; border-radius:12px; margin-bottom:16px; }
+    </style>
+</head>
+<body>
+<header>
+    <a href="../index.html">← Back to Home</a>
+    <h1>Builder Design Pattern</h1>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Definition</h2>
+        <p>The Builder Pattern is a creational design pattern that allows the step-by-step construction of complex objects. It separates the construction of a complex object from its representation, enabling the same construction process to create different representations.</p>
+    </section>
+
+    <section class="card">
+        <h2>Usage</h2>
+        <ul>
+            <li>When an object needs to be created with many optional parameters.</li>
+            <li>When you want to avoid constructors with too many parameters.</li>
+            <li>When building complex objects step by step.</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Example in C#</h2>
+        <pre><code>public class Car
+{
+    public string Engine { get; set; }
+    public int Wheels { get; set; }
+    public bool HasGPS { get; set; }
+}
+
+public class CarBuilder
+{
+    private Car _car = new Car();
+
+    public CarBuilder SetEngine(string engine) { _car.Engine = engine; return this; }
+    public CarBuilder SetWheels(int wheels) { _car.Wheels = wheels; return this; }
+    public CarBuilder AddGPS() { _car.HasGPS = true; return this; }
+    public Car Build() { return _car; }
+}
+
+var car = new CarBuilder()
+    .SetEngine("V8")
+    .SetWheels(4)
+    .AddGPS()
+    .Build();
+</code></pre>
+    </section>
+    
+<section class="card">
+        <h2>UML Diagram</h2>
+        <svg class="diagram" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+
+            <rect x="20" y="20" width="200" height="110" rx="10" fill="#111730" stroke="#55e6c1" stroke-width="2"/>
+            <text x="120" y="40" text-anchor="middle" fill="#e9eefc" font-weight="bold">CarBuilder</text>
+            <line x1="20" y1="60" x2="220" y2="60" stroke="#55e6c1"/>
+            <text x="30" y="80" fill="#e9eefc">+ SetEngine()</text>
+            <text x="30" y="95" fill="#e9eefc">+ SetWheels()</text>
+            <text x="30" y="110" fill="#e9eefc">+ AddGPS()</text>
+            <text x="30" y="125" fill="#e9eefc">+ Build(): Car</text>
+
+            <rect x="300" y="20" width="200" height="100" rx="10" fill="#111730" stroke="#55e6c1" stroke-width="2"/>
+            <text x="400" y="40" text-anchor="middle" fill="#e9eefc" font-weight="bold">Car</text>
+            <line x1="300" y1="60" x2="500" y2="60" stroke="#55e6c1"/>
+            <text x="310" y="80" fill="#e9eefc">- Engine: string</text>
+            <text x="310" y="95" fill="#e9eefc">- Wheels: int</text>
+            <text x="310" y="110" fill="#e9eefc">- HasGPS: bool</text>
+
+            <line x1="220" y1="60" x2="300" y2="60" stroke="#55e6c1" marker-end="url(#arrow)"/>
+            <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L6,3 z" fill="#55e6c1"/>
+                </marker>
+            </defs>
+        </svg>
+    </section>
+    
+    <section class="card">
+        <h2>Advantages</h2>
+        <ul>
+            <li>Improves code readability with step-by-step construction.</li>
+            <li>Makes the creation of complex objects easier.</li>
+            <li>Avoids large constructors with many parameters.</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Disadvantages</h2>
+        <ul>
+            <li>Can make the code more complex compared to simple constructors.</li>
+            <li>Requires creating a separate Builder class.</li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Builder Pattern Guide</p>
+</footer>
+</body>
+</html>
