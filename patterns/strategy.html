@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Strategy Pattern</title>
+    <meta name="description" content="Define a family of algorithms, encapsulate each one, and make them interchangeable." />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+            color: #e2e8f0;
+            line-height: 1.7;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-breadcrumb {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .nav-breadcrumb a {
+            color: #7dd3fc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-breadcrumb a:hover {
+            color: #38bdf8;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #38bdf8 0%, #7dd3fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            gap: 0.5rem;
+        }
+        
+        .tab {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+            color: #94a3b8;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .tab.active, .tab:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: #38bdf8;
+            color: #38bdf8;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 8px 32px rgba(56, 189, 248, 0.1);
+        }
+        
+        .card h2 {
+            color: #38bdf8;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .card p, .card li {
+            color: #cbd5e1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card ul {
+            padding-left: 1.2rem;
+        }
+        
+        .uml-container {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .uml-boxes {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .uml-box {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid #38bdf8;
+            border-radius: 8px;
+            padding: 1rem;
+            min-width: 140px;
+            text-align: center;
+        }
+        
+        .uml-box h3 {
+            color: #38bdf8;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .uml-arrow {
+            color: #7dd3fc;
+            font-size: 1.5rem;
+        }
+        
+        .code-container {
+            background: rgba(15, 20, 25, 0.9);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .code-header {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .code-dots {
+            display: flex;
+            gap: 0.25rem;
+        }
+        
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #ef4444; }
+        .dot.yellow { background: #eab308; }
+        .dot.green { background: #22c55e; }
+        
+        .code-title {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        
+        pre {
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+        
+        .keyword { color: #f472b6; }
+        .string { color: #34d399; }
+        .comment { color: #6b7280; font-style: italic; }
+        .function { color: #60a5fa; }
+        .number { color: #fbbf24; }
+        
+        .pros-cons-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .pros-list, .cons-list {
+            list-style: none;
+        }
+        
+        .pros-list li::before {
+            content: "✅";
+            margin-right: 0.5rem;
+        }
+        
+        .cons-list li::before {
+            content: "⚠️";
+            margin-right: 0.5rem;
+        }
+        
+        .demo-container {
+            background: rgba(15, 20, 25, 0.8);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .demo-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .demo-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4);
+        }
+        
+        .output {
+            background: rgba(0, 0, 0, 0.4);
+            border-left: 3px solid #38bdf8;
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-family: monospace;
+            color: #22c55e;
+        }
+        
+        .footer-nav {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            border-top: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .footer-nav a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-nav a:hover {
+            color: #7dd3fc;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .pros-cons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .uml-boxes {
+                flex-direction: column;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-breadcrumb">
+            <a href="../index.html">Design Patterns Compendium</a>
+        </div>
+        
+        <h1>The Strategy Pattern</h1>
+        <p class="subtitle">Define a family of algorithms, encapsulate each one, and make them interchangeable within that family. This allows the algorithm to vary independently from clients that use it.</p>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('theory')">Core Theory</div>
+            <div class="tab" onclick="showTab('uml')">Class UML</div>
+            <div class="tab" onclick="showTab('implementations')">Implementations</div>
+        </div>
+        
+        <div class="grid grid-2">
+            <div class="card" id="theory-content">
+                <h2>When to Use</h2>
+                <ul>
+                    <li>Need to use different variants of an algorithm within an object and be able to switch from one algorithm to another during runtime</li>
+                    <li>Classes that differ only in the way they execute some behavior</li>
+                    <li>Use the pattern to isolate the business logic of a class from the implementation details of algorithms that may not be as important in the context of that logic</li>
+                    <li>Your class has a massive conditional operator that switches between different variants of the same algorithm</li>
+                </ul>
+            </div>
+            
+            <div class="card" id="theory-content-2">
+                <h2>Checklist</h2>
+                <ul>
+                    <li>Identify algorithms that are prone to frequent changes or have multiple variants</li>
+                    <li>Create the common Strategy interface — it declares a method the context uses to execute a strategy</li>
+                    <li>Extract all algorithms into their own classes</li>
+                    <li>In the context class, add a field for storing a reference to a strategy object</li>
+                    <li>Provide a setter for replacing values of the strategy field</li>
+                    <li>The context delegates the work to a linked strategy object instead of executing it on its own</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card" id="uml-content" style="display: none;">
+            <h2>UML Snapshot</h2>
+            <div class="uml-container">
+                <div class="uml-boxes">
+                    <div class="uml-box">
+                        <h3>Context</h3>
+                        <p>-strategy: Strategy</p>
+                        <p>+setStrategy()</p>
+                        <p>+doSomething()</p>
+                    </div>
+                    <div class="uml-arrow">→</div>
+                    <div class="uml-box">
+                        <h3>Strategy</h3>
+                        <p>+execute()</p>
+                    </div>
+                </div>
+                <div class="uml-boxes">
+                    <div class="uml-box">
+                        <h3>ConcreteStrategyA</h3>
+                        <p>+execute()</p>
+                    </div>
+                    <div class="uml-box">
+                        <h3>ConcreteStrategyB</h3>
+                        <p>+execute()</p>
+                    </div>
+                    <div class="uml-box">
+                        <h3>ConcreteStrategyC</h3>
+                        <p>+execute()</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" id="implementations-content" style="display: none;">
+            <h2>Idiomatic Implementations</h2>
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="code-title">JavaScript — Lazy, Thread-Safe (Module Checked Locking)</div>
+                </div>
+                <pre><code><span class="comment">// Strategy Interface</span>
+<span class="keyword">class</span> <span class="function">PaymentStrategy</span> {
+    <span class="function">processPayment</span>(amount) {
+        <span class="keyword">throw new</span> <span class="function">Error</span>(<span class="string">"Method must be implemented"</span>);
+    }
+}
+
+<span class="comment">// Concrete Strategies</span>
+<span class="keyword">class</span> <span class="function">CreditCardPayment</span> <span class="keyword">extends</span> PaymentStrategy {
+    <span class="function">constructor</span>(cardNumber, cvv) {
+        <span class="keyword">super</span>();
+        <span class="keyword">this</span>.cardNumber = cardNumber;
+        <span class="keyword">this</span>.cvv = cvv;
+    }
+    
+    <span class="function">processPayment</span>(amount) {
+        <span class="keyword">return</span> <span class="string">`Processing ${amount} via Credit Card ending in ${this.cardNumber.slice(-4)}`</span>;
+    }
+}
+
+<span class="keyword">class</span> <span class="function">PayPalPayment</span> <span class="keyword">extends</span> PaymentStrategy {
+    <span class="function">constructor</span>(email) {
+        <span class="keyword">super</span>();
+        <span class="keyword">this</span>.email = email;
+    }
+    
+    <span class="function">processPayment</span>(amount) {
+        <span class="keyword">return</span> <span class="string">`Processing ${amount} via PayPal account: ${this.email}`</span>;
+    }
+}
+
+<span class="keyword">class</span> <span class="function">CryptoPayment</span> <span class="keyword">extends</span> PaymentStrategy {
+    <span class="function">constructor</span>(walletAddress) {
+        <span class="keyword">super</span>();
+        <span class="keyword">this</span>.walletAddress = walletAddress;
+    }
+    
+    <span class="function">processPayment</span>(amount) {
+        <span class="keyword">return</span> <span class="string">`Processing ${amount} via Crypto wallet: ${this.walletAddress.substring(0, 8)}...`</span>;
+    }
+}
+
+<span class="comment">// Context</span>
+<span class="keyword">class</span> <span class="function">ShoppingCart</span> {
+    <span class="function">constructor</span>() {
+        <span class="keyword">this</span>.items = [];
+        <span class="keyword">this</span>.paymentStrategy = <span class="keyword">null</span>;
+    }
+    
+    <span class="function">addItem</span>(item, price) {
+        <span class="keyword">this</span>.items.push({ item, price });
+    }
+    
+    <span class="function">setPaymentStrategy</span>(strategy) {
+        <span class="keyword">this</span>.paymentStrategy = strategy;
+    }
+    
+    <span class="function">checkout</span>() {
+        <span class="keyword">const</span> total = <span class="keyword">this</span>.items.reduce((sum, item) => sum + item.price, <span class="number">0</span>);
+        <span class="keyword">if</span> (!<span class="keyword">this</span>.paymentStrategy) {
+            <span class="keyword">throw new</span> <span class="function">Error</span>(<span class="string">"Payment strategy not set"</span>);
+        }
+        <span class="keyword">return</span> <span class="keyword">this</span>.paymentStrategy.processPayment(total);
+    }
+}</code></pre>
+            </div>
+            
+            <p style="margin-top: 1rem; color: #94a3b8; font-style: italic;">
+                Alternative — Simple functional approach for simpler use cases with object strategy selection/reflection attacks.
+            </p>
+            
+            <div class="code-container">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div class="code-title">Functional Approach</div>
+                </div>
+                <pre><code><span class="keyword">const</span> sortingStrategies = {
+    <span class="function">quickSort</span>: (arr) => [...arr].sort((a, b) => a - b),
+    <span class="function">bubbleSort</span>: (arr) => {
+        <span class="keyword">const</span> result = [...arr];
+        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < result.length; i++) {
+            <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j < result.length - i - <span class="number">1</span>; j++) {
+                <span class="keyword">if</span> (result[j] > result[j + <span class="number">1</span>]) {
+                    [result[j], result[j + <span class="number">1</span>]] = [result[j + <span class="number">1</span>], result[j]];
+                }
+            }
+        }
+        <span class="keyword">return</span> result;
+    }
+};
+
+<span class="keyword">const</span> <span class="function">sorter</span> = (strategy, arr) => sortingStrategies[strategy](arr);</code></pre>
+            </div>
+        </div>
+        
+        <div class="pros-cons-grid">
+            <div class="card">
+                <h2>Pros & Cons</h2>
+                
+                <h3 style="color: #22c55e; margin: 1rem 0 0.5rem 0;">✅ Benefits</h3>
+                <ul class="pros-list">
+                    <li>You can swap algorithms used inside an object at runtime</li>
+                    <li>You can isolate the implementation details of an algorithm from the code that uses it</li>
+                    <li>You can replace inheritance with composition</li>
+                    <li>Open/Closed Principle. You can introduce new strategies without having to change the context</li>
+                </ul>
+                
+                <h3 style="color: #ef4444; margin: 1.5rem 0 0.5rem 0;">⚠️ Pitfalls</h3>
+                <ul class="cons-list">
+                    <li>If you only have a couple of algorithms and they rarely change, there's no real reason to overcomplicate the program with new classes and interfaces</li>
+                    <li>Clients must be aware of the differences between strategies to be able to select a proper one</li>
+                    <li>A lot of modern programming languages have functional type support that lets you implement different versions of an algorithm inside a set of anonymous functions</li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Alternatives</h2>
+                <ul>
+                    <li><strong>Dependency Injection:</strong> Pure framework capability, use when available for better testability and maintainability</li>
+                    <li><strong>Simple function calls:</strong> Better for straightforward use cases</li>
+                    <li><strong>Service Locator:</strong> Static global implementations, prefer DI frameworks</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="grid grid-2">
+            <div class="card">
+                <h2>Real-World Demo (JS)</h2>
+                <div class="demo-container">
+                    <p style="margin-bottom: 1rem; color: #94a3b8;">This demo shows a simple e-commerce system. Multiple shipping options before publishing/deployment from different payment providers.</p>
+                    
+                    <div class="demo-controls">
+                        <button class="demo-button" onclick="demoPayment('credit')">💳 Credit Card</button>
+                        <button class="demo-button" onclick="demoPayment('paypal')">🅿️ PayPal</button>
+                        <button class="demo-button" onclick="demoPayment('crypto')">₿ Crypto</button>
+                    </div>
+                    
+                    <div class="output" id="output">
+                        Click a payment method to see the strategy in action...
+                    </div>
+                </div>
+                
+                <script>
+                    // Tab functionality
+                    function showTab(tabName) {
+                        // Hide all content sections
+                        const theoryContent = document.getElementById('theory-content');
+                        const theoryContent2 = document.getElementById('theory-content-2');
+                        const umlContent = document.getElementById('uml-content');
+                        const implementationsContent = document.getElementById('implementations-content');
+                        
+                        // Remove active class from all tabs
+                        document.querySelectorAll('.tab').forEach(tab => {
+                            tab.classList.remove('active');
+                        });
+                        
+                        // Show selected content and activate tab
+                        if (tabName === 'theory') {
+                            theoryContent.style.display = 'block';
+                            theoryContent2.style.display = 'block';
+                            umlContent.style.display = 'none';
+                            implementationsContent.style.display = 'none';
+                            document.querySelector('.tab[onclick="showTab(\'theory\')"]').classList.add('active');
+                        } else if (tabName === 'uml') {
+                            theoryContent.style.display = 'none';
+                            theoryContent2.style.display = 'none';
+                            umlContent.style.display = 'block';
+                            implementationsContent.style.display = 'none';
+                            document.querySelector('.tab[onclick="showTab(\'uml\')"]').classList.add('active');
+                        } else if (tabName === 'implementations') {
+                            theoryContent.style.display = 'none';
+                            theoryContent2.style.display = 'none';
+                            umlContent.style.display = 'none';
+                            implementationsContent.style.display = 'block';
+                            document.querySelector('.tab[onclick="showTab(\'implementations\')"]').classList.add('active');
+                        }
+                    }
+                
+                    // Demo implementation
+                    const cart = new (function() {
+                        this.items = [
+                            { name: 'Laptop', price: 999 },
+                            { name: 'Mouse', price: 25 },
+                            { name: 'Keyboard', price: 75 }
+                        ];
+                        this.paymentStrategy = null;
+                        
+                        this.setPaymentStrategy = function(strategy) {
+                            this.paymentStrategy = strategy;
+                        };
+                        
+                        this.getTotal = function() {
+                            return this.items.reduce((sum, item) => sum + item.price, 0);
+                        };
+                        
+                        this.processPayment = function() {
+                            if (!this.paymentStrategy) {
+                                return 'No payment strategy selected';
+                            }
+                            return this.paymentStrategy.processPayment(this.getTotal());
+                        };
+                    })();
+                    
+                    function demoPayment(type) {
+                        const strategies = {
+                            credit: { processPayment: (amount) => `✅ Processed ${amount} via Credit Card (****-1234)` },
+                            paypal: { processPayment: (amount) => `✅ Processed ${amount} via PayPal (user@example.com)` },
+                            crypto: { processPayment: (amount) => `✅ Processed ${amount} via Bitcoin (bc1qxy2k...)` }
+                        };
+                        
+                        cart.setPaymentStrategy(strategies[type]);
+                        document.getElementById('output').textContent = cart.processPayment();
+                    }
+                </script>
+            </div>
+            
+            <div class="card">
+                <h2>Testing Tips</h2>
+                <ul>
+                    <li><strong>Unit test</strong> each strategy independently with different inputs</li>
+                    <li><strong>Mock strategies</strong> in context tests to verify delegation works correctly</li>
+                    <li><strong>Test strategy switching</strong> at runtime to ensure no side effects</li>
+                    <li><strong>Verify null handling</strong> and proper error messages for undefined strategies</li>
+                    <li><strong>Performance test</strong> strategy switching overhead in high-frequency scenarios</li>
+                    <li><strong>Integration test</strong> with real-world data and edge cases</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Common Gotchas & Hardening</h2>
+            <ul>
+                <li><strong>Strategy lifecycle management:</strong> Avoid creating new instances for every usage - consider flyweight pattern or singleton instances for stateless strategies</li>
+                <li><strong>Performance consideration:</strong> Strategy selection shouldn't become a bottleneck in hot paths</li>
+                <li><strong>Strategy validation:</strong> Always validate strategy exists before usage, provide meaningful error messages</li>
+                <li><strong>Thread safety:</strong> Ensure strategy switching is thread-safe in concurrent environments, consider immutable context or proper synchronization</li>
+                <li><strong>Configuration-driven strategy selection:</strong> Avoid hardcoding strategy selection, use configuration or factory patterns for better flexibility</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>Relations with Other Patterns</h2>
+            <ul>
+                <li><strong>Bridge, State and to some degree Adapter</strong> have very similar structures. Indeed, all of these patterns are based on composition, which is delegating work to other objects</li>
+                <li><strong>Command</strong> and Strategy may look similar since you can use both to parameterize an object with some action. However, they have very different intents</li>
+                <li><strong>Decorator</strong> lets you change the skin of an object, while Strategy lets you change the guts</li>
+                <li><strong>Template Method</strong> is based on inheritance: it lets you alter parts of an algorithm by extending those parts in subclasses. Strategy is based on composition</li>
+                <li><strong>State</strong> can be considered as an extension of Strategy. Both patterns are based on composition: they change the behavior of the context by delegating some work to helper objects</li>
+            </ul>
+        </div>
+        
+        <div class="footer-nav">
+            <p>Learn more: <a href="https://refactoring.guru/design-patterns/strategy" target="_blank">refactoring.guru/strategy</a></p>
+            <p style="margin-top: 1rem;"><a href="../index.html">← Back to Design Patterns Guide</a></p>
+        </div>
+    </div>
+</body>
+</html>
