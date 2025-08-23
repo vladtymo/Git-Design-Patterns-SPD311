@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Observer Pattern Guide</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-left: 6px solid #3498db;
+      background-color: #f0f4f8;
+      border-radius: 8px;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      color: #2980b9;
+    }
+
+    .section ul {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+
+    code {
+      display: block;
+      background-color: #e1e8ed;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-top: 10px;
+    }
+
+    .pros, .cons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .pros div, .cons div {
+      flex: 1;
+      min-width: 200px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #d0d6de;
+    }
+
+    .pros div {
+      border-left: 6px solid #2ecc71;
+    }
+
+    .cons div {
+      border-left: 6px solid #e74c3c;
+    }
+
+    /* Back to Home button */
+    .btn {
+        display: inline-block;
+        text-decoration: none; 
+          background-color: #3498db;
+          color: #fff;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-weight: bold;
+          margin-top: 20px;
+          transition: background-color 0.3s, transform 0.2s;
+          text-align: center;
+    }
+
+    .btn:hover {
+          background-color: #2980b9;
+        transform: translateY(-1px);
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Observer Pattern - Web Project Guide</h1>
+
+    <div class="section">
+      <h2>1. What is Observer?</h2>
+      <p>The Observer pattern allows objects (subjects) to notify other objects (observers) about changes in their state automatically, without tight coupling. Common uses in web projects include:</p>
+      <ul>
+        <li>Synchronizing UI with data models</li>
+        <li>Reacting to user events</li>
+        <li>Notifying components of state changes</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>2. When to Use</h2>
+      <ul>
+        <li>Multiple components depend on a single data source</li>
+        <li>Dynamic reaction to state changes is needed</li>
+        <li>Reducing tight coupling between components</li>
+      </ul>
+      <p>Examples: live chat, notifications, data subscriptions, user event tracking.</p>
+    </div>
+
+    <div class="section">
+      <h2>3. Implementation Checklist</h2>
+      <ul>
+        <li>Define a <strong>Subject</strong> – the object whose state will be observed</li>
+        <li>Create <strong>Observers</strong> – objects that react to state changes</li>
+        <li>Subject methods: <code>attach(observer)</code>, <code>detach(observer)</code>, <code>notify()</code></li>
+        <li>Each observer implements <code>update(data)</code> method</li>
+        <li>Ensure the Subject does not directly call observer logic</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>4. Pros & Cons</h2>
+      <div class="pros">
+        <div>Reduces coupling between components</div>
+        <div>Easy to add new observers</div>
+        <div>Suitable for dynamic systems with multiple dependent elements</div>
+        <div>Testable: observers can be mocked</div>
+      </div>
+      <div class="cons">
+        <div>Hard to track update order</div>
+        <div>Many observers → performance cost</div>
+        <div>Risk of memory leaks if observers are not detached</div>
+        <div>Debugging can be complex with many interdependent observers</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>5. Alternatives</h2>
+      <ul>
+        <li><strong>Mediator:</strong> central object manages communication between components</li>
+        <li><strong>Event Bus / Pub-Sub:</strong> asynchronous messaging, less coupling</li>
+        <li><strong>Two-way data binding:</strong> automatic UI update on model change (Vue.js / Angular)</li>
+        <li><strong>Redux / MobX / Zustand:</strong> global state with reactive updates</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>6. Example</h2>
+      <code>
+        // Subject<br>
+        class DataStore {<br>
+        &nbsp;&nbsp;constructor() {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;this.observers = [];<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;this.data = null;<br>
+        &nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;attach(observer) { this.observers.push(observer); }<br>
+        &nbsp;&nbsp;detach(observer) { this.observers = this.observers.filter(obs => obs !== observer); }<br>
+        &nbsp;&nbsp;notify() { this.observers.forEach(obs => obs.update(this.data)); }<br><br>
+        &nbsp;&nbsp;setData(newData) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;this.data = newData;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;this.notify();<br>
+        &nbsp;&nbsp;}<br>
+        }<br><br>
+        // Observer<br>
+        class UIComponent {<br>
+        &nbsp;&nbsp;update(data) { console.log("UI updated with", data); }<br>
+        }<br><br>
+        const store = new DataStore();<br>
+        const component = new UIComponent();<br>
+        store.attach(component);<br>
+        store.setData({ user: "Leon" }); // "UI updated with { user: 'Leon' }"
+      </code>
+    </div>
+     <a href="../index.html" class="btn">Back to Home</a>
+  </div>
+</body>
+</html>
