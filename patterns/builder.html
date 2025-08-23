@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Design Pattern</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#0b1020; color:#e9eefc; margin:0; padding:20px; }
+        a { color:#55e6c1; text-decoration:none; }
+        a:hover { text-decoration:underline; }
+        header, main, footer { max-width:900px; margin:auto; padding:16px; }
+        h1 { font-size:2em; margin-bottom:0.2em; }
+        h2 { margin-top:1em; }
+        pre { background:#111730; padding:16px; border-radius:8px; overflow:auto; }
+        .card { background:#111730; padding:16px; border-radius:12px; margin-bottom:16px; }
+    </style>
+</head>
+<body>
+<header>
+    <a href="../index.html">← Back to Home</a>
+    <h1>Builder Design Pattern</h1>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Definition</h2>
+        <p>The Builder Pattern is a creational design pattern that allows the step-by-step construction of complex objects. It separates the construction of a complex object from its representation, enabling the same construction process to create different representations.</p>
+    </section>
+
+    <section class="card">
+        <h2>Usage</h2>
+        <ul>
+            <li>When an object needs to be created with many optional parameters.</li>
+            <li>When you want to avoid constructors with too many parameters.</li>
+            <li>When building complex objects step by step.</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Example in C#</h2>
+        <pre><code>public class Car
+{
+    public string Engine { get; set; }
+    public int Wheels { get; set; }
+    public bool HasGPS { get; set; }
+}
+
+public class CarBuilder
+{
+    private Car _car = new Car();
+
+    public CarBuilder SetEngine(string engine) { _car.Engine = engine; return this; }
+    public CarBuilder SetWheels(int wheels) { _car.Wheels = wheels; return this; }
+    public CarBuilder AddGPS() { _car.HasGPS = true; return this; }
+    public Car Build() { return _car; }
+}
+
+var car = new CarBuilder()
+    .SetEngine("V8")
+    .SetWheels(4)
+    .AddGPS()
+    .Build();
+</code></pre>
+    </section>
+
+    <section class="card">
+        <h2>Advantages</h2>
+        <ul>
+            <li>Improves code readability with step-by-step construction.</li>
+            <li>Makes the creation of complex objects easier.</li>
+            <li>Avoids large constructors with many parameters.</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Disadvantages</h2>
+        <ul>
+            <li>Can make the code more complex compared to simple constructors.</li>
+            <li>Requires creating a separate Builder class.</li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Builder Pattern Guide</p>
+</footer>
+</body>
+</html>
