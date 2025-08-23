@@ -8,123 +8,116 @@
   <meta name="description"
     content="Extended, practical guide to the Facade design pattern: UML, pros & cons, real-world cases, pitfalls, alternatives, and interactive demo." />
   <style>
-    :root {
-      --bg: #0b1020;
-      --card: #111730;
-      --card-2: #0e142a;
-      --text: #e9eefc;
-      --muted: #a9b2d0;
-      --brand: #7aa2ff;
-      --accent: #55e6c1;
-      --border: #22305f;
-      --code: #0a0f22;
-      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
-    }
+:root {
+  --bg: #0b1020;
+  --card: #111730;
+  --card-2: #0e142a;
+  --text: #e9eefc;
+  --muted: #a9b2d0;
+  --brand: #7aa2ff;
+  --accent: #55e6c1;
+  --border: #22305f;
+  --code: #0a0f22;
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+  --pros: #2ecc71;
+  --cons: #e74c3c;
+}
 
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-    }
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 32px 20px 64px;
-    }
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 32px 20px 64px;
+}
 
-    header {
-      margin-bottom: 32px;
-    }
+h1 {
+  text-align: center;
+  font-size: clamp(32px, 4vw, 54px);
+  margin-bottom: 32px;
+}
 
-    .title {
-      font-size: clamp(32px, 4vw, 54px);
-      margin: 6px 0;
-    }
+.section {
+  background: linear-gradient(180deg, var(--card), var(--card-2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin-bottom: 24px;
+  color: #fff; /* яркий белый текст внутри секций */
+}
 
-    .subtitle {
-      color: var(--muted);
-      max-width: 70ch;
-    }
+.section h2 {
+  margin-top: 0;
+  color: var(--brand);
+}
+.section ul {
+  padding-left: 20px;
+}
+.section ul, .section p {
+  color: #fff; 
+pre, code {
+  background: var(--code);
+  padding: 14px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-size: 14px;
+  color: #fff; 
+}
 
-    .grid {
-      display: grid;
-      gap: 18px;
-      grid-template-columns: repeat(12, 1fr);
-    }
+.pros, .cons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
 
-    .card {
-      grid-column: span 12;
-      background: linear-gradient(180deg, var(--card), var(--card-2));
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 20px;
-    }
+.pros div, .cons div {
+  flex: 1;
+  min-width: 180px;
+  background: linear-gradient(180deg, var(--card-2), var(--card));
+  border-left: 6px solid;
+  border-radius: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+}
 
-    @media (min-width: 900px) {
-      .card.span-6 {
-        grid-column: span 6;
-      }
+.pros div { border-color: var(--pros); }
+.cons div { border-color: var(--cons); }
 
-      .card.span-8 {
-        grid-column: span 8;
-      }
+button, .btn {
+  background: var(--brand);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  text-decoration: none;
+  display: inline-block;
+  transition: 0.2s;
+}
 
-      .card.span-4 {
-        grid-column: span 4;
-      }
-    }
+button:hover, .btn:hover {
+  background: var(--accent);
+}
 
-    h2 {
-      margin-top: 0;
-    }
-
-    pre {
-      background: var(--code);
-      padding: 14px;
-      border-radius: 12px;
-      overflow-x: auto;
-      font-size: 14px;
-    }
-
-    code.inline {
-      background: #222;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
-
-    button {
-      background: var(--brand);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: var(--accent);
-    }
-
-    #demo-output {
-      background: #0a0f22;
-      min-height: 80px;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 8px;
-      font-family: monospace;
-      font-size: 14px;
-    }
-  </style>
+.uml-diagram svg {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  margin-top: 16px;
+}
+</style>
 </head>
 
 <body>
