@@ -62,7 +62,35 @@ var car = new CarBuilder()
     .Build();
 </code></pre>
     </section>
+    
+<section class="card">
+        <h2>UML Diagram</h2>
+        <svg class="diagram" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
 
+            <rect x="20" y="20" width="200" height="110" rx="10" fill="#111730" stroke="#55e6c1" stroke-width="2"/>
+            <text x="120" y="40" text-anchor="middle" fill="#e9eefc" font-weight="bold">CarBuilder</text>
+            <line x1="20" y1="60" x2="220" y2="60" stroke="#55e6c1"/>
+            <text x="30" y="80" fill="#e9eefc">+ SetEngine()</text>
+            <text x="30" y="95" fill="#e9eefc">+ SetWheels()</text>
+            <text x="30" y="110" fill="#e9eefc">+ AddGPS()</text>
+            <text x="30" y="125" fill="#e9eefc">+ Build(): Car</text>
+
+            <rect x="300" y="20" width="200" height="100" rx="10" fill="#111730" stroke="#55e6c1" stroke-width="2"/>
+            <text x="400" y="40" text-anchor="middle" fill="#e9eefc" font-weight="bold">Car</text>
+            <line x1="300" y1="60" x2="500" y2="60" stroke="#55e6c1"/>
+            <text x="310" y="80" fill="#e9eefc">- Engine: string</text>
+            <text x="310" y="95" fill="#e9eefc">- Wheels: int</text>
+            <text x="310" y="110" fill="#e9eefc">- HasGPS: bool</text>
+
+            <line x1="220" y1="60" x2="300" y2="60" stroke="#55e6c1" marker-end="url(#arrow)"/>
+            <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L6,3 z" fill="#55e6c1"/>
+                </marker>
+            </defs>
+        </svg>
+    </section>
+    
     <section class="card">
         <h2>Advantages</h2>
         <ul>
