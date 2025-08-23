@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Facade Pattern — Extended Guide</title>
+  <meta name="description"
+    content="Extended, practical guide to the Facade design pattern: UML, pros & cons, real-world cases, pitfalls, alternatives, and interactive demo." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #111730;
+      --card-2: #0e142a;
+      --text: #e9eefc;
+      --muted: #a9b2d0;
+      --brand: #7aa2ff;
+      --accent: #55e6c1;
+      --border: #22305f;
+      --code: #0a0f22;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    header {
+      margin-bottom: 32px;
+    }
+
+    .title {
+      font-size: clamp(32px, 4vw, 54px);
+      margin: 6px 0;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 70ch;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+
+    .card {
+      grid-column: span 12;
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    @media (min-width: 900px) {
+      .card.span-6 {
+        grid-column: span 6;
+      }
+
+      .card.span-8 {
+        grid-column: span 8;
+      }
+
+      .card.span-4 {
+        grid-column: span 4;
+      }
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    pre {
+      background: var(--code);
+      padding: 14px;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+
+    code.inline {
+      background: #222;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    button {
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: var(--accent);
+    }
+
+    #demo-output {
+      background: #0a0f22;
+      min-height: 80px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1 class="title">The Facade Pattern — Extended Guide</h1>
+      <p class="subtitle">
+        The Facade pattern provides a unified interface to a set of interfaces in a subsystem. It defines a higher-level
+        API that makes the subsystem easier to use without exposing internal complexity.
+      </p>
+    </header>
+    <div>
+        <button class="btn">
+            <a class="clear-styles" href="../index.html">Back Home</a>
+        </button>
+    </div>
+    <section class="grid">
+      <article class="card span-8">
+        <h2>Key Ideas</h2>
+        <ul>
+          <li>Simplifies usage of a complex system by providing one entry point.</li>
+          <li>Reduces dependencies between client code and subsystem classes.</li>
+          <li>Introduces a higher-level API while leaving subsystems intact.</li>
+          <li>Often used in libraries, frameworks, and legacy integration.</li>
+        </ul>
+      </article>
+
+      <aside class="card span-4">
+        <h2>Quick Checklist</h2>
+        <ul>
+          <li>✔️ Identify subsystem complexity.</li>
+          <li>✔️ Create a <code class="inline">Facade</code> class.</li>
+          <li>✔️ Aggregate calls to subsystem classes.</li>
+          <li>✔️ Expose only the essential API.</li>
+        </ul>
+      </aside>
+
+      <article class="card span-12">
+        <h2>UML Snapshot</h2>
+        <p class="muted">The Facade delegates work to subsystems but exposes only the necessary interface.</p>
+        <svg class="diagram" viewBox="0 0 800 220" xmlns="http://www.w3.org/2000/svg" role="img"
+          aria-label="UML diagram of Facade">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7aa2ff" stop-opacity="0.7" />
+              <stop offset="100%" stop-color="#55e6c1" stop-opacity="0.7" />
+            </linearGradient>
+          </defs>
+          <!-- Facade -->
+          <rect x="50" y="20" width="200" height="80" rx="12" fill="url(#g)" opacity="0.1" stroke="currentColor" />
+          <text x="150" y="50" text-anchor="middle" font-weight="600">Facade</text>
+          <line x1="50" y1="60" x2="250" y2="60" stroke="currentColor" />
+          <text x="60" y="80">+ operation()</text>
+
+          <!-- Subsystems -->
+          <rect x="350" y="20" width="180" height="60" rx="12" fill="url(#g)" opacity="0.1" stroke="currentColor" />
+          <text x="440" y="50" text-anchor="middle">SubsystemA</text>
+
+          <rect x="350" y="100" width="180" height="60" rx="12" fill="url(#g)" opacity="0.1" stroke="currentColor" />
+          <text x="440" y="130" text-anchor="middle">SubsystemB</text>
+
+          <rect x="350" y="180" width="180" height="60" rx="12" fill="url(#g)" opacity="0.1" stroke="currentColor" />
+          <text x="440" y="210" text-anchor="middle">SubsystemC</text>
+
+          <!-- Arrows -->
+          <line x1="250" y1="60" x2="350" y2="50" stroke="currentColor" marker-end="url(#arrow)" />
+          <line x1="250" y1="60" x2="350" y2="130" stroke="currentColor" marker-end="url(#arrow)" />
+          <line x1="250" y1="60" x2="350" y2="210" stroke="currentColor" marker-end="url(#arrow)" />
+
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"
+              markerUnits="strokeWidth">
+              <path d="M0,0 L0,6 L6,3 z" fill="currentColor" />
+            </marker>
+          </defs>
+        </svg>
+      </article>
+
+      <article class="card span-12">
+        <h2>Idiomatic Implementations</h2>
+        <h3>Java</h3>
+        <pre><code>class SubsystemA { void opA() { System.out.println("A"); } }
+class SubsystemB { void opB() { System.out.println("B"); } }
+
+class Facade {
+  private final SubsystemA a = new SubsystemA();
+  private final SubsystemB b = new SubsystemB();
+  public void operation() {
+    a.opA();
+    b.opB();
+  }
+}</code></pre>
+
+        <h3>C#</h3>
+        <pre><code>class Facade {
+  private Audio audio = new Audio();
+  private Video video = new Video();
+  public void PlayMovie(string file) {
+    audio.Load(file);
+    video.Load(file);
+  }
+}</code></pre>
+
+        <h3>JavaScript</h3>
+        <pre><code>class CPU { start() { console.log("CPU start"); } }
+class Memory { load() { console.log("Memory load"); } }
+
+class ComputerFacade {
+  constructor() {
+    this.cpu = new CPU();
+    this.memory = new Memory();
+  }
+  start() {
+    this.cpu.start();
+    this.memory.load();
+  }
+}</code></pre>
+
+        <h3>Python</h3>
+        <pre><code>class SubA:
+    def op(self): print("SubA")
+
+class SubB:
+    def op(self): print("SubB")
+
+class Facade:
+    def __init__(self):
+        self.a, self.b = SubA(), SubB()
+    def operation(self):
+        self.a.op()
+        self.b.op()</code></pre>
+      </article>
+
+      <article class="card span-6">
+        <h2>Pros & Cons</h2>
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <h3>✅ Benefits</h3>
+            <ul>
+              <li>Simplifies usage of complex subsystems.</li>
+              <li>Improves readability and usability.</li>
+              <li>Encourages loose coupling.</li>
+              <li>Good entry point for libraries/frameworks.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>⚠️ Pitfalls</h3>
+            <ul>
+              <li>May hide necessary functionality.</li>
+              <li>Too many facades → extra indirection.</li>
+              <li>Not a replacement for poor design.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card span-6">
+        <h2>Alternatives & Comparisons</h2>
+        <ul>
+          <li><strong>Adapter</strong>: when the interface must change shape.</li>
+          <li><strong>Decorator</strong>: to extend functionality without hiding subsystem.</li>
+          <li><strong>Mediator</strong>: coordinates objects, Facade just simplifies API.</li>
+          <li><strong>Proxy</strong>: controls access, not simplify complexity.</li>
+        </ul>
+      </article>
+
+      <article class="card span-12">
+        <h2>Real-World Examples</h2>
+        <ul>
+          <li><strong>Database Client</strong> — <code class="inline">db.query()</code> instead of sockets, protocols,
+            parsers.</li>
+          <li><strong>GUI Frameworks</strong> — high-level UI components wrapping complex low-level drawing code.</li>
+          <li><strong>Payment Gateway SDK</strong> — one method call instead of cryptography, API calls, error handling.
+          </li>
+        </ul>
+      </article>
+
+      <article class="card span-12">
+        <h2>Anti-Patterns & Misuses</h2>
+        <ul>
+          <li>❌ Turning Facade into a "God Object" with too many responsibilities.</li>
+          <li>❌ Hiding critical subsystem features, making debugging harder.</li>
+          <li>❌ Using Facade instead of fixing bad subsystem design.</li>
+        </ul>
+      </article>
+
+      <article class="card span-12">
+        <h2>Interactive Demo (JS)</h2>
+        <p>Click the button to see how a Facade simplifies subsystem usage:</p>
+        <button onclick="runDemo()">Start Computer via Facade</button>
+        <div id="demo-output"></div>
+        <script>
+          class CPU { start() { return "CPU: starting..."; } }
+          class Memory { load() { return "Memory: loading..."; } }
+          class Disk { read() { return "Disk: reading data..."; } }
+
+          class ComputerFacade {
+            constructor() {
+              this.cpu = new CPU();
+              this.memory = new Memory();
+              this.disk = new Disk();
+            }
+            start() {
+              return [
+                this.cpu.start(),
+                this.memory.load(),
+                this.disk.read(),
+                "Computer ready!"
+              ].join("\n");
+            }
+          }
+
+          function runDemo() {
+            const pc = new ComputerFacade();
+            document.getElementById("demo-output").innerText = pc.start();
+          }
+        </script>
+      </article>
+    </section>
+
+    <footer>
+      <p>© 2025 Extended Facade Pattern Guide. Built as a single HTML file.</p>
+    </footer>
+  </div>
+</body>
+</html>
