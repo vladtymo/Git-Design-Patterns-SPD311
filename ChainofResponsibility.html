@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Builder Design Pattern</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#0b1020; color:#e9eefc; margin:0; padding:20px; }
+        a { color:#55e6c1; text-decoration:none; }
+        a:hover { text-decoration:underline; }
+        header, main, footer { max-width:900px; margin:auto; padding:16px; }
+        h1 { font-size:2em; margin-bottom:0.2em; }
+        h2 { margin-top:1em; }
+        pre { background:#111730; padding:16px; border-radius:8px; overflow:auto; }
+        .card { background:#111730; padding:16px; border-radius:12px; margin-bottom:16px; }
+    </style>
+</head>
+<body>
+<header>
+    <a href="../index.html">← Back to Home</a>
+    <h1>Chain of Responsibility</h1>
+</header>
+
+<main>
+    <section class="card">
+        <h2>Intent</h2>
+        <p>Chain of Responsibility is a behavioral design pattern that lets you pass requests along a chain of handlers. Upon receiving a request, each handler decides either to process the request or to pass it to the next handler in the chain.</p>
+    </section>
+
+    <section class="card">
+        <h2>Problem</h2>
+            <p>Imagine that you’re working on an online ordering system. You want to restrict access to the system so only authenticated users can create orders. Also, users who have administrative permissions must have full access to all orders.</p>
+            <p>After a bit of planning, you realized that these checks must be performed sequentially. The application can attempt to authenticate a user to the system whenever it receives a request that contains the user’s credentials. However, if those credentials aren’t correct and authentication fails, there’s no reason to proceed with any other checks.</p>
+
+    </section>
+
+    <section class="card">
+        <h2>Example in C#</h2>
+        <pre><code>// The handler interface declares a method for executing a
+// request.
+interface ComponentWithContextualHelp is
+    method showHelp()
+
+
+// The base class for simple components.
+abstract class Component implements ComponentWithContextualHelp is
+    field tooltipText: string
+
+    // The component's container acts as the next link in the
+    // chain of handlers.
+    protected field container: Container
+
+    // The component shows a tooltip if there's help text
+    // assigned to it. Otherwise it forwards the call to the
+    // container, if it exists.
+    method showHelp() is
+        if (tooltipText != null)
+            // Show tooltip.
+        else
+            container.showHelp()
+
+
+// Containers can contain both simple components and other
+// containers as children. The chain relationships are
+// established here. The class inherits showHelp behavior from
+// its parent.
+abstract class Container extends Component is
+    protected field children: array of Component
+
+    method add(child) is
+        children.add(child)
+        child.container = this
+
+
+// Primitive components may be fine with default help
+// implementation...
+class Button extends Component is
+    // ...
+
+// But complex components may override the default
+// implementation. If the help text can't be provided in a new
+// way, the component can always call the base implementation
+// (see Component class).
+class Panel extends Container is
+    field modalHelpText: string
+
+    method showHelp() is
+        if (modalHelpText != null)
+            // Show a modal window with the help text.
+        else
+            super.showHelp()
+
+// ...same as above...
+class Dialog extends Container is
+    field wikiPageURL: string
+
+    method showHelp() is
+        if (wikiPageURL != null)
+            // Open the wiki help page.
+        else
+            super.showHelp()
+
+
+// Client code.
+class Application is
+    // Every application configures the chain differently.
+    method createUI() is
+        dialog = new Dialog("Budget Reports")
+        dialog.wikiPageURL = "http://..."
+        panel = new Panel(0, 0, 400, 800)
+        panel.modalHelpText = "This panel does..."
+        ok = new Button(250, 760, 50, 20, "OK")
+        ok.tooltipText = "This is an OK button that..."
+        cancel = new Button(320, 760, 50, 20, "Cancel")
+        // ...
+        panel.add(ok)
+        panel.add(cancel)
+        dialog.add(panel)
+
+    // Imagine what happens here.
+    method onF1KeyPress() is
+        component = this.getComponentAtMouseCoords()
+        component.showHelp()
+</code></pre>
+    </section>
+    
+    <section class="card">
+        <h2>Advantages</h2>
+        <ul>
+            <li>Improves code readability with step-by-step construction.</li>
+            <li>Makes the creation of complex objects easier.</li>
+            <li>Avoids large constructors with many parameters.</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Pros and Cons</h2>
+        <ul>
+            <li> Single Responsibility Principle. You can decouple classes that invoke operations from classes that perform operations.</li>
+            <li> Open/Closed Principle. You can introduce new handlers into the app without breaking the existing client code.</li>
+            <li> You can control the order of request handling.</li>
+            <li> Some requests may end up unhandled.</li>
+            
+        </ul>
+    </section>
+</main>
+
+<footer>
+    <p>Chain of Responsibility</p>
+</footer>
+</body>
+</html>
