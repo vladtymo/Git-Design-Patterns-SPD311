@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Adapter Pattern — A Practical Guide</title>
+  <meta name="description"
+        content="A structural design pattern that allows objects with incompatible interfaces to collaborate." />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f8f9fa;
+      color: #333;
+    }
+    h1, h2 {
+      color: #2c3e50;
+    }
+    .code-block {
+      background: #272822;
+      color: #f8f8f2;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: Consolas, monospace;
+      overflow-x: auto;
+    }
+    .btn-back {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background: #3498db;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+    .btn-back:hover {
+      background: #2980b9;
+    }
+  </style>
+  <script>
+    class Target {
+      request() {
+        return "Target: the default request.";
+      }
+    }
+
+    class Adaptee {
+      specificRequest() {
+        return "Adaptee: a specific request in another format.";
+      }
+    }
+
+    class Adapter extends Target {
+      constructor(adaptee) {
+        super();
+        this.adaptee = adaptee;
+      }
+      request() {
+        return `Adapter: (converted) ${this.adaptee.specificRequest()}`;
+      }
+    }
+
+    function runDemo() {
+      const target = new Target();
+      const adaptee = new Adaptee();
+      const adapter = new Adapter(adaptee);
+
+      const output = document.getElementById("demo-output");
+      output.innerHTML = `
+        <p><b>Target:</b> ${target.request()}</p>
+        <p><b>Adaptee:</b> ${adaptee.specificRequest()}</p>
+        <p><b>Adapter:</b> ${adapter.request()}</p>
+      `;
+    }
+
+    window.onload = runDemo;
+  </script>
+</head>
+<body>
+  <h1>Adapter Pattern</h1>
+
+  <h2>Concept</h2>
+  <p>
+    The <b>Adapter</b> is a structural design pattern that allows objects 
+    with incompatible interfaces to work together.  
+    It acts as a bridge that translates one interface into another.
+  </p>
+
+  <h2>Example</h2>
+  <div class="code-block">
+<pre>
+class Target {
+  request() {
+    return "Target: the default request.";
+  }
+}
+
+class Adaptee {
+  specificRequest() {
+    return "Adaptee: a specific request.";
+  }
+}
+
+class Adapter extends Target {
+  constructor(adaptee) {
+    super();
+    this.adaptee = adaptee;
+  }
+
+  request() {
+    return `Adapter: (converted) ${this.adaptee.specificRequest()}`;
+  }
+}
+</pre>
+  </div>
+
+  <h2>Demo</h2>
+  <div id="demo-output" style="background:#ecf0f1; padding:10px; border-radius:6px;"></div>
+
+  <a href="../index.html" class="btn-back">← Back to Home</a>
+</body>
+</html>
